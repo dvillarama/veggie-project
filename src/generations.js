@@ -6,10 +6,13 @@
  */
 const neighbor = (grid, i, j) => {
   if (i < 0 || j < 0 || i >= grid.length || j >= grid[i].length) {
-    return 0;
+    return { count: 0, adult: 0 };
   }
 
-  return (!!grid[i][j]) ?  1 : 0;
+  const count = !!grid[i][j] ? 1 : 0;
+  const adult = grid[i][j] === 2 ? 1 : 0;
+  const value = grid[i][j]
+  return { count, adult };
 };
 
 /**
@@ -29,8 +32,26 @@ const neighbors = (grid, i, j) => {
   const bottom = neighbor(grid, i + 1, j);
   const rightBottom = neighbor(grid, i + 1, j + 1);
 
-  const total = leftTop + top + rightTop + left + right + leftBottom + bottom + rightBottom;
-  return total;
+  const total =
+    leftTop.count +
+    top.count +
+    rightTop.count +
+    left.count +
+    right.count +
+    leftBottom.count +
+    bottom.count +
+    rightBottom.count;
+
+  const adult =
+    leftTop.adult +
+    top.adult +
+    rightTop.adult +
+    left.adult +
+    right.adult +
+    leftBottom.adult +
+    bottom.adult +
+    rightBottom.adult;
+  return { total, adult };
 };
 
 /**
@@ -39,21 +60,21 @@ const neighbors = (grid, i, j) => {
  * - neighbors - number of neighbors
  * return the next value
  */
-const nextCell = (value, neighbors) => {
+const nextCell = (value, neighbors, adult) => {
   if (value === 0) {
-    if (neighbors === 2) {
+    if (adult === 2) {
       return 1;
     } else {
       0;
     }
   } else if (value === 1) {
-    if (neighbors >= 5  || neighbors <= 1) {
+    if (neighbors >= 5 || neighbors <= 1) {
       return 0;
     } else {
       return 2;
     }
   } else if (value === 2) {
-    if (neighbors >= 3  || neighbors === 0) {
+    if (neighbors >= 3 || neighbors === 0) {
       return 0;
     } else {
       return 3;
@@ -73,9 +94,8 @@ const next = (grid) => {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       const value = grid[i][j];
-      const neighborCount = neighbors(grid, i, j);
-      const nextValue = nextCell(value, neighborCount);
-      console.log({i, j, value, neighborCount, nextValue});
+      const { total, adult } = neighbors(grid, i, j);
+      const nextValue = nextCell(value, total, adult);
       nextGrid[i][j] = nextValue;
     }
   }
@@ -91,8 +111,10 @@ const next = (grid) => {
 const nextGenerations = (grid, generation) => {
   let endGeneration = grid;
   for (let i = 0; i < generation; i++) {
-    endGeneration = next(grid);
+    endGeneration = next(endGeneration);
   }
+
+  console.log({endGeneration});
   return endGeneration;
 };
 
