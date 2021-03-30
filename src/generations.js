@@ -5,13 +5,17 @@
  * - j - cell position
  */
 const neighbor = (grid, i, j) => {
+  // handle all non-existing neighbors
   if (i < 0 || j < 0 || i >= grid.length || j >= grid[i].length) {
     return { count: 0, adult: 0 };
   }
 
+  // if there is a neighbor, count is 1
   const count = !!grid[i][j] ? 1 : 0;
+
+  // if the neighbor is an adult, adult is 1
   const adult = grid[i][j] === 2 ? 1 : 0;
-  const value = grid[i][j]
+
   return { count, adult };
 };
 
@@ -51,6 +55,7 @@ const neighbors = (grid, i, j) => {
     leftBottom.adult +
     bottom.adult +
     rightBottom.adult;
+
   return { total, adult };
 };
 
