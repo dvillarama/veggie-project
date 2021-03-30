@@ -114,8 +114,7 @@ const nextGenerations = (grid, generation) => {
     endGeneration = next(endGeneration);
   }
 
-  console.log({endGeneration});
   return endGeneration;
 };
 
-module.exports = { next, nextGenerations, neighbors };
+module.exports = { next, nextGenerations };
